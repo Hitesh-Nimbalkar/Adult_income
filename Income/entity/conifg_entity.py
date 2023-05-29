@@ -1,8 +1,0 @@
-
-
-
-
-
-
-class Training_pipepine:
-    

@@ -1,29 +1,12 @@
-FILE_NAME: adult.csv
-
-columns:
-
-
+training_pipeline_config:
+  pipeline_name: Income_pipeline
+  artifact_dir: Artifact
 
 
+data_ingestion_config:
+  raw_data_dir: raw_data
+  ingested_dir: ingested_data
+  ingested_train_dir: train
+  ingested_test_dir: test 
 
-
-
-
-drop_columns:
-
-
-
-numerical_columns:
-
-
-
-categorical_columns:
-
-
-
-one_hot_encoder_columns:
-
-
-
-target_columns:
 
