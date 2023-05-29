@@ -56,6 +56,46 @@ class Configuration:
             raise ApplicationException(e,sys) from e
         
         
+    def get_data_validation_config(self) -> DataValidationConfig:
+        try:
+            artifact_dir = self.training_pipeline_config.artifact_dir
+            
+            data_validation_config=self.config_info[DATA_VALIDATION_CONFIG_KEY]
+            
+            schema_dir=self.config_info[SCHEMA_CONFIG_KEY]
+
+            data_validation_artifact_dir=os.path.join(
+                                                        artifact_dir,
+                                                        data_validation_config[DATA_VALIDATION_ARTIFACT_DIRECTORY_KEY],
+                                                        self.time_stamp
+                                                         )
+            
+            validated_path=os.path.join(data_validation_artifact_dir,data_validation_config[DATA_VLIDATION_DIRECTORY_KEY])
+            
+            validated_train_path=os.path.join(data_validation_artifact_dir,validated_path,data_validation_config[DATA_VALIDATION_TRAIN_DIR_KEY])
+            
+            validated_test_path=os.path.join(data_validation_artifact_dir,validated_path,data_validation_config[DATA_VALIDATION_TEST_DIR_KEY])
+
+
+            schema_file_path = os.path.join(
+                ROOT_DIR,
+                schema_dir[SCHEMA_DIR_KEY],
+                schema_dir[SCHEMA_FILE_NAME]
+            )
+            
+            print(schema_file_path)
+            
+
+            data_validation_config = DataValidationConfig(
+                schema_file_path=schema_file_path,
+                validated_train_path=validated_train_path,
+                validated_test_path=validated_test_path
+            )
+            return data_validation_config
+        except Exception as e:
+            raise ApplicationException(e,sys) from e
+        
+        
     def get_training_pipeline_config(self) ->TrainingPipelineConfig:
         try:
             training_pipeline_config = self.config_info[TRAINING_PIPELINE_CONFIG_KEY]

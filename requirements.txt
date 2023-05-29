@@ -7,3 +7,4 @@ geoplot
 pymongo
 yaml
 PyYAML
+evidently

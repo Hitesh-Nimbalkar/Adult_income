@@ -1,19 +1,19 @@
 File_Name: adult.csv
 
 column_names:
-  age: int64
+  age: int
   workclass: object
-  fnlwgt: int64
+  fnlwgt: int
   education: object
-  educational-num: int64
+  educational-num: int
   marital-status: object
   occupation: object
   relationship: object
   race: object
   gender: object
-  capital-gain: int64
-  capital-loss: int64
-  hours-per-week: int64
+  capital-gain: int
+  capital-loss: int
+  hours-per-week: int
   native-country: object
   income: object
 
