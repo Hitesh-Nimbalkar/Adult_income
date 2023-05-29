@@ -1,0 +1,2 @@
+DATABASE_NAME='Income'
+COLLECTION_NAME='data'

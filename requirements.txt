@@ -4,3 +4,6 @@ matplotlib
 seaborn
 geopandas
 geoplot
+pymongo
+yaml
+Pyml
