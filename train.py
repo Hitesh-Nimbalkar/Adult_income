@@ -1,14 +1,14 @@
 import sys
 from Income.exception import ApplicationException
 from Income.logger import logging
-from Income.configuration import configuration
+from Income.configuration.configuration import Configuration
 from Income.components.data_ingestion import DataIngestion
 from Income.entity.artifact_entity import *
 
 
 
 class Pipeline():
-    def __init__(self, config: configuration=configuration()) -> None:
+    def __init__(self, config:Configuration=Configuration()) -> None:
         try:
             self.config = config
         except Exception as e:
@@ -33,4 +33,4 @@ class Pipeline():
         
         
 train=Pipeline()
-train.run_pipeline(configuration)
+train.run_pipeline()

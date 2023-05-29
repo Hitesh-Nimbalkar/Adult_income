@@ -1,5 +1,5 @@
 training_pipeline_config:
-  pipeline_name: Income_pipeline
+  pipeline: Income_pipeline
   artifact_dir: Artifact
 
 
