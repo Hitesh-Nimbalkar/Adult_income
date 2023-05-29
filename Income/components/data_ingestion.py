@@ -57,24 +57,23 @@ class DataIngestion:
             
             file_name = os.listdir(raw_data_dir)[0]
 
-            shipment_file_path = os.path.join(raw_data_dir, file_name)
+            file_path = os.path.join(raw_data_dir, file_name)
 
-            logging.info(f"Reading csv file: [{shipment_file_path}]")
+            logging.info(f"Reading csv file: [{file_path}]")
 
-            shipment_df  = pd.read_csv(shipment_file_path)
+            df  = pd.read_csv(file_path)
 
             logging.info(f"Splitting data into train and test")
 
             train_set = None
             test_set = None
 
-            train_set, test_set = train_test_split(shipment_df, test_size=0.2, random_state=42)
+            train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
 
-            train_file_path = os.path.join(self.data_ingestion_config.ingested_train_dir,
-                                           file_name)
+            train_file_path = os.path.join(self.data_ingestion_config.ingested_train_dir, "train.csv")
 
             test_file_path = os.path.join(self.data_ingestion_config.ingested_test_dir,
-                                          file_name)
+                                          "test.csv")
 # ***********************************************************************************************
             if train_set is not None:
                 os.makedirs(self.data_ingestion_config.ingested_train_dir, exist_ok=True)
