@@ -6,4 +6,4 @@ geopandas
 geoplot
 pymongo
 yaml
-Pyml
+PyYAML

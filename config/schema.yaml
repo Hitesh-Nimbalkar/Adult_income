@@ -1,0 +1,58 @@
+File_Name: adult.csv
+
+column_names:
+  age: int64
+  workclass: object
+  fnlwgt: int64
+  education: object
+  educational-num: int64
+  marital-status: object
+  occupation: object
+  relationship: object
+  race: object
+  gender: object
+  capital-gain: int64
+  capital-loss: int64
+  hours-per-week: int64
+  native-country: object
+  income: object
+
+
+
+drop_columns:
+
+
+numerical Columns:
+- age: Numerical
+- fnlwgt: Numerical
+- educational-num: Numerical
+- capital-gain: Numerical
+- capital-loss: Numerical
+- hours-per-week: Numerical
+
+categorical Columns:
+- workclass: Categorical
+- education: Categorical
+- marital-status: Categorical
+- occupation: Categorical
+- relationship: Categorical
+- race: Categorical
+- gender: Categorical
+- native-country: Categorical
+
+
+one_hot_encoder_columns:
+- workclass: Categorical
+- education: Categorical
+- marital-status: Categorical
+- occupation: Categorical
+- relationship: Categorical
+- race: Categorical
+- gender: Categorical
+- native-country: Categorical
+
+
+
+target_columns:
+- income: Categorical
+

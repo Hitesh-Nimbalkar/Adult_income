@@ -1,0 +1,1 @@
+TRAINING_PIPELINE_CONFIG_KEY='Training pipeline'
