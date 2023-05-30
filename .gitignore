@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 artifact
+Income_pipeline
 .vscode
 # C extensions
 *.so

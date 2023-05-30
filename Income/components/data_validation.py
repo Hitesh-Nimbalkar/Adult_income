@@ -84,10 +84,11 @@ class DataValidation:
                     file_name=train_filename)
 
                 is_train_column_name_same = self.train_data.check_column_names()
+                validating_train_data_types=self.train_data.validate_data_types()
 
                 is_train_missing_values_whole_column = self.train_data.missing_values_whole_column()
                 
-                validating_data_types=self.train_data.validate_data_types()
+                
                 self.train_data.replace_null_values_with_null()
 
                 
@@ -99,11 +100,12 @@ class DataValidation:
                     file_name=test_filename)
 
                 is_test_column_name_same = self.test_data.check_column_names()
+                validating_test_data_types=self.test_data.validate_data_types()
 
                 is_test_missing_values_whole_column = self.test_data.missing_values_whole_column()
 
                 self.test_data.replace_null_values_with_null()
-                validating_data_types=self.test_data.validate_data_types()
+                
                 
                 
 
@@ -113,14 +115,16 @@ class DataValidation:
                     f"is Train filename validated? {is_train_filename_validated} | "
                     f"is train column name validated? {is_train_column_name_same} | "
                     f"whole missing columns? {is_train_missing_values_whole_column}"
+                    f"Data type validation? {validating_train_data_types}"
                 )
                 logging.info(
                     f"Test_set status: "
                     f"is Test filename validated? {is_test_filename_validated} | "
                     f"is test column names validated? {is_test_column_name_same} | "
                     f"whole missing columns? {is_test_missing_values_whole_column}"
+                    f"Data type validation? {validating_test_data_types}"
 )
-                if is_train_filename_validated  & is_train_column_name_same & is_train_missing_values_whole_column & validating_data_types:
+                if is_train_filename_validated  & is_train_column_name_same & is_train_missing_values_whole_column & validating_train_data_types :
                     
                     ## Exporting Train.csv file 
                     # Create the directory if it doesn't exist
@@ -133,10 +137,11 @@ class DataValidation:
                     logging.info(f"Exported validated train dataset to file: [{self.validated_train_path}]")
                                      
                                      
-                                        
+                if is_test_filename_validated  & is_test_column_name_same & is_test_missing_values_whole_column & validating_test_data_types :
+                                          
                     ## Exporting test.csv file
                     os.makedirs(self.validated_test_path, exist_ok=True)
-                    logging.info(f"Exporting validated train dataset to file: [{self.validated_train_path}]")
+                    logging.info(f"Exporting validated test dataset to file: [{self.validated_test_path}]")
                     os.makedirs(self.validated_test_path, exist_ok=True)
                     # Copy the CSV file to the validated train path
                     shutil.copy(self.test_path, self.validated_test_path)
@@ -148,7 +153,7 @@ class DataValidation:
                     return validation_status,self.validated_train_path,self.validated_test_path
                 else:
                     validation_status = False
-                    logging.info("Check yout Training Data! Validation Failed")
+                    logging.info("Check your Training Data! Validation Failed")
                     raise ValueError(
                         "Check your Training data! Validation failed")
                 

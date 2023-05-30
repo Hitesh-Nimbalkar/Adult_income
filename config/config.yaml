@@ -10,8 +10,8 @@ data_ingestion_config:
   ingested_test_dir: test 
 
 data_validation_config:
-  data_validation: raw_data
-  validation_dir: ingested_data
+  data_validation: data_validation
+  validation_dir: validated_data
   Train: train
   Test: test 
 

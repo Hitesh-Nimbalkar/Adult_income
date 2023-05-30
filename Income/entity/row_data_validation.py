@@ -59,9 +59,9 @@ class IngestedDataValidation:
             df_column_names = df.columns
             schema_column_names = list(self.data['column_names'].keys())
             
-            logging.info(f"Data Column names {df_column_names}")
+           # logging.info(f"Data Column names {df_column_names}")
             
-            logging.info(f"Schema Column names {schema_column_names}")
+           # logging.info(f"Schema Column names {schema_column_names}")
 
             return True if collections.Counter(df_column_names) == collections.Counter(schema_column_names) else False
         except Exception as e:
