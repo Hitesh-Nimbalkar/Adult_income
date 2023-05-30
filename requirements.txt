@@ -8,3 +8,4 @@ pymongo
 yaml
 PyYAML
 evidently
+dill

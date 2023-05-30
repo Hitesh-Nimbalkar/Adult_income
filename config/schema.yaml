@@ -5,10 +5,10 @@ column_names:
   workclass: object
   fnlwgt: int64
   education: object
-  educational-num: int64
   marital-status: object
   occupation: object
   relationship: object
+  educational-num: int64
   race: object
   gender: object
   capital-gain: int64
@@ -20,39 +20,26 @@ column_names:
 
 
 drop_columns:
+  - fnlwgt
+  - capital-gain
+  - capital-loss
+  - educational-num
 
 
-numerical Columns:
-- age: Numerical
-- fnlwgt: Numerical
-- educational-num: Numerical
-- capital-gain: Numerical
-- capital-loss: Numerical
-- hours-per-week: Numerical
+numerical_columns:
+  - age
+  - hours-per-week
 
-categorical Columns:
-- workclass: Categorical
-- education: Categorical
-- marital-status: Categorical
-- occupation: Categorical
-- relationship: Categorical
-- race: Categorical
-- gender: Categorical
-- native-country: Categorical
+categorical_columns:
+  - workclass
+  - education
+  - marital-status
+  - occupation
+  - relationship
+  - race
+  - gender
+  - native-country
 
 
-one_hot_encoder_columns:
-- workclass: Categorical
-- education: Categorical
-- marital-status: Categorical
-- occupation: Categorical
-- relationship: Categorical
-- race: Categorical
-- gender: Categorical
-- native-country: Categorical
-
-
-
-target_columns:
-- income: Categorical
-
+target_column:
+  - income

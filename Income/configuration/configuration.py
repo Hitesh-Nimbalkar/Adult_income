@@ -55,6 +55,67 @@ class Configuration:
         except Exception as e:
             raise ApplicationException(e,sys) from e
         
+    def get_data_transformation_config(self) -> DataTransformationConfig:
+        try:
+            artifact_dir = self.training_pipeline_config.artifact_dir
+            data_transformation_artifact_dir = os.path.join(artifact_dir, 
+                                                            DATA_TRANSFORMATION_ARTIFACT_DIR, 
+                                                            self.time_stamp)
+
+            data_transformation_config = self.config_info[DATA_TRANSFORMATION_CONFIG_KEY]
+
+            preprocessed_object_file_path = os.path.join(data_transformation_artifact_dir,
+                                data_transformation_config[DATA_TRANSFORMATION_PREPROCESSING_DIR_KEY],
+                                data_transformation_config[DATA_TRANSFORMATION_PREPROCESSING_FILE_NAME_KEY])
+
+            feature_engineering_object_file_path = os.path.join(data_transformation_artifact_dir,
+                                data_transformation_config[DATA_TRANSFORMATION_PREPROCESSING_DIR_KEY],
+                                data_transformation_config[DATA_TRANSFORMATION_FEATURE_ENGINEERING_FILE_NAME_KEY])
+
+            transformed_input_train_path = os.path.join(data_transformation_artifact_dir,
+                                data_transformation_config[DATA_TRANSFORMATION_DIR_NAME_KEY],
+                                data_transformation_config[DATA_TRANSFORMATION_TRAIN_DIR_NAME_KEY])
+            
+            transformed_target_train_path=os.path.join(data_transformation_artifact_dir,
+                                data_transformation_config[DATA_TRANSFORMATION_DIR_NAME_KEY],
+                                data_transformation_config[DATA_TRANSFORMATION_TRAIN_DIR_NAME_KEY])
+
+            transformed_input_test_path = os.path.join(data_transformation_artifact_dir,
+                                data_transformation_config[DATA_TRANSFORMATION_DIR_NAME_KEY],
+                                data_transformation_config[DATA_TRANSFORMATION_TEST_DIR_NAME_KEY])
+            
+            transformed_target_test_path=os.path.join(data_transformation_artifact_dir,
+                                            data_transformation_config[DATA_TRANSFORMATION_DIR_NAME_KEY],
+                                            data_transformation_config[DATA_TRANSFORMATION_TEST_DIR_NAME_KEY])
+
+            data_transformation_config = DataTransformationConfig(transformed_input_train_path=transformed_input_train_path,
+                                                                  transformed_target_train_path=transformed_target_train_path,
+                                                    transformed_input_test_path=transformed_input_test_path,
+                                                    transformed_target_test_path=transformed_target_test_path,
+                                                    preprocessed_object_file_path=preprocessed_object_file_path,
+                                                    feature_engineering_object_file_path=feature_engineering_object_file_path)
+            
+            
+            ### Folder Structure ####
+            # Artifact 
+                # data_Transformation 
+                    # Transformed Train 
+                
+                    
+                    # Transformed Test 
+                      
+                        
+                    # Preprocessor 
+
+            
+            
+            logging.info(f"Data Transformation Config: {data_transformation_config}")
+            return data_transformation_config
+        except Exception as e:
+            raise ApplicationException(e,sys) from e
+        
+        
+    
         
     def get_data_validation_config(self) -> DataValidationConfig:
         try:

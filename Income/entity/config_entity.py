@@ -13,3 +13,9 @@ DataIngestionConfig=namedtuple("DataIngestionConfig",[
 DataValidationConfig=namedtuple("DataValidationConfig",["schema_file_path",
                                                         "validated_train_path",
                                                         "validated_test_path"])
+DataTransformationConfig = namedtuple("DataTransformationConfig",[  "transformed_input_train_path",
+                                                                    "transformed_target_train_path",
+                                                                    "transformed_input_test_path",
+                                                                    "transformed_target_test_path",
+                                                                  "preprocessed_object_file_path",
+                                                                  "feature_engineering_object_file_path"])

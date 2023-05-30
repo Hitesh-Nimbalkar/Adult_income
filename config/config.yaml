@@ -1,7 +1,13 @@
+
+schema_config:
+  schema_dir: config
+  schema_file: schema.yaml
+
+
+
 training_pipeline_config:
   pipeline: Income_pipeline
   artifact_dir: Artifact
-
 
 data_ingestion_config:
   raw_data_dir: raw_data
@@ -15,6 +21,11 @@ data_validation_config:
   Train: train
   Test: test 
 
-schema_config:
-  schema_dir: config
-  schema_file: schema.yaml
+data_transformation_config:
+  transformed_dir: transformed_data                # Directory
+  transformed_train_dir: train                       # Train Directory
+  transformed_test_dir: test                            # Test Directory
+  preprocessing_dir: preprocesser                       # Preprocessor Directory
+  feature_engineering_object_file_name: feat_eng.pkl        # feature eng file
+  preprocessed_object_file_name: preprocessed.pkl           # preprocessor gile
+
