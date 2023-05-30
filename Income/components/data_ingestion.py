@@ -70,10 +70,10 @@ class DataIngestion:
 
             train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
 
-            train_file_path = os.path.join(self.data_ingestion_config.ingested_train_dir, "train.csv")
+            train_file_path = os.path.join(self.data_ingestion_config.ingested_train_dir, file_name)
 
             test_file_path = os.path.join(self.data_ingestion_config.ingested_test_dir,
-                                          "test.csv")
+                                          file_name)
 # ***********************************************************************************************
             if train_set is not None:
                 os.makedirs(self.data_ingestion_config.ingested_train_dir, exist_ok=True)

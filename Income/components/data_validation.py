@@ -13,10 +13,10 @@ from scipy.stats import ks_2samp
 import pandas as pd
 import json
 
-#from evidently.model_profile import Profile
-#from evidently.model_profile.sections import DataDriftProfileSection
-#from evidently.dashboard import Dashboard
-#from evidently.dashboard.tabs import DataDriftTab
+from evidently.model_profile import Profile
+from evidently.model_profile.sections import DataDriftProfileSection
+from evidently.dashboard import Dashboard
+from evidently.dashboard.tabs import DataDriftTab
 
 
 class DataValidation:
@@ -108,12 +108,18 @@ class DataValidation:
                 
 
                 
-
                 logging.info(
-                    f"Train_set status|is Train filename validated?: {is_train_filename_validated}|is train column name validated?: {is_train_column_name_same}|whole missing columns?{is_train_missing_values_whole_column}| Datatype validation {validating_data_types}")
+                    f"Train_set status: "
+                    f"is Train filename validated? {is_train_filename_validated} | "
+                    f"is train column name validated? {is_train_column_name_same} | "
+                    f"whole missing columns? {is_train_missing_values_whole_column}"
+                )
                 logging.info(
-                    f"Test_set status|is Test filename validated?: {is_test_filename_validated}|is test column names validated? {is_test_column_name_same}| whole missing columns? {is_test_missing_values_whole_column}Datatype validation {validating_data_types}")
-
+                    f"Test_set status: "
+                    f"is Test filename validated? {is_test_filename_validated} | "
+                    f"is test column names validated? {is_test_column_name_same} | "
+                    f"whole missing columns? {is_test_missing_values_whole_column}"
+)
                 if is_train_filename_validated  & is_train_column_name_same & is_train_missing_values_whole_column & validating_data_types:
                     
                     ## Exporting Train.csv file 

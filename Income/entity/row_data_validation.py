@@ -1,3 +1,4 @@
+
 from Income.exception import ApplicationException
 from Income.logger import logging
 import os, sys
@@ -6,7 +7,7 @@ import pandas as pd
 import collections
 import pandas as pd
 import numpy as np
-
+from numpy import int64
 
 class IngestedDataValidation:
 
@@ -57,6 +58,10 @@ class IngestedDataValidation:
             df = pd.read_csv(self.validate_path)
             df_column_names = df.columns
             schema_column_names = list(self.data['column_names'].keys())
+            
+            logging.info(f"Data Column names {df_column_names}")
+            
+            logging.info(f"Schema Column names {schema_column_names}")
 
             return True if collections.Counter(df_column_names) == collections.Counter(schema_column_names) else False
         except Exception as e:
@@ -68,19 +73,19 @@ class IngestedDataValidation:
         flag = True  # Initialize the flag as True
         df=pd.read_csv(self.validate_path)
         expected_data_types = {
-            'age': int ,
+            'age': int64 ,
             'workclass': object,
-            'fnlwgt': int,
+            'fnlwgt': int64,
             'education': object,
-            'educational-num': int,
+            'educational-num': int64,
             'marital-status': object,
             'occupation': object,
             'relationship': object,
             'race': object,
             'gender': object,
-            'capital-gain': int,
-            'capital-loss': int,
-            'hours-per-week': int,
+            'capital-gain': int64,
+            'capital-loss': int64,
+            'hours-per-week': int64,
             'native-country': object,
             'income': object
         }

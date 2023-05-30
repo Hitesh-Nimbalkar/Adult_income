@@ -1,34 +1,34 @@
-from distutils.log import error
-import os
+import traceback
 import sys
 
 class ApplicationException(Exception):
     
-    def __init__(self, error_message:Exception, error_details:sys):
+    def __init__(self, error_message: Exception, error_details: sys):
         super().__init__(error_message)
-        self.error_message = ApplicationException.get_detailed_error_message(error_message=error_message,
-                                                                                error_details=error_details)
+        self.error_message = self.get_detailed_error_message(error_message, error_details)
 
     @staticmethod
-    def get_detailed_error_message(error_message:Exception, error_details:sys)->str:
+    def get_detailed_error_message(error_message: Exception, error_details: sys) -> str:
         """
         error_message: Exception object
         error_details: object of sys module
         """
 
-        _, _, exec_tb = error_details.exc_info()
+        error_traceback = traceback.format_exc()
+        error_type = type(error_message).__name__
+        error_message = str(error_message)
 
-        line_number = exec_tb.tb_lineno
-        file_name = exec_tb.tb_frame.f_code.co_filename
+        detailed_error_message = f"""
+        Error type: {error_type}
+        Error message: {error_message}
+        Error traceback:
+        {error_traceback}
+        """
 
-        error_message = f"""
-        Error occured in script: [{file_name}] at 
-        line number: [{line_number}] 
-        error message: [{error_message}]"""
-        return error_message
+        return detailed_error_message.strip()
 
     def __str__(self):
         return self.error_message
 
     def __repr__(self):
-        return ApplicationException.__name__.str()
+        return self.__class__.__name__
