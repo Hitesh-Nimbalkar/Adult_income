@@ -125,12 +125,19 @@ class batch_prediction:
             file_path = os.path.join(FEATURE_ENG, 'batch_fea_eng.csv')
             df.to_csv(file_path, index=False)
             logging.info("Feature-engineered batch data saved as CSV.")
+            
+            
 
         # Transform the feature-engineered data using the preprocessor
-            transformed_data = preprocessor.transform(df.drop('income',axis=1))
+            input_features=df.drop('income',axis=1)
+            logging.info(f'Columns in data frame :{input_features.columns}')
+            transformed_data = preprocessor.transform(input_features)
             
             print(type(transformed_data))
-
+            
+            logging.info(f" Transformed Data :{transformed_data.shape}")
+            
+    
             # Make predictions using the model
             predictions = model.predict(transformed_data)
 
