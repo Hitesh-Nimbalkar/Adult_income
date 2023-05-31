@@ -89,7 +89,7 @@ class DataValidation:
                 is_train_missing_values_whole_column = self.train_data.missing_values_whole_column()
                 
                 
-                self.train_data.replace_null_values_with_null()
+                self.train_data.replace_null_values_with_nan()
 
                 
                 # Test File 
@@ -104,7 +104,7 @@ class DataValidation:
 
                 is_test_missing_values_whole_column = self.test_data.missing_values_whole_column()
 
-                self.test_data.replace_null_values_with_null()
+                self.test_data.replace_null_values_with_nan()
                 
                 
                 

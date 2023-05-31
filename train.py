@@ -5,6 +5,7 @@ from Income.configuration.configuration import Configuration
 from Income.components.data_ingestion import DataIngestion
 from Income.components.data_validation import DataValidation
 from Income.components.data_transformation import DataTransformation
+from Income.components.model_trainer import ModelTrainer
 from Income.entity.artifact_entity import *
 
 
@@ -46,6 +47,17 @@ class Pipeline():
             raise ApplicationException(e,sys) from e
         
         
+        
+        
+    def start_model_training(self,data_transformation_artifact: DataTransformationArtifact) -> ModelTrainerArtifact:
+        try:
+            model_trainer = ModelTrainer(model_trainer_config=self.config.get_model_trainer_config(),
+                                        data_transformation_artifact=data_transformation_artifact)   
+
+            return model_trainer.initiate_model_training()
+        except Exception as e:
+            raise ApplicationException(e,sys) from e  
+        
     def run_pipeline(self):
         try:
              #data ingestion
@@ -54,6 +66,8 @@ class Pipeline():
             data_validation_artifact=self.start_data_validation(data_ingestion_artifact=data_ingestion_artifact)
             data_transformation_artifact = self.start_data_transformation(data_ingestion_artifact=data_ingestion_artifact,
                                                     data_validation_artifact=data_validation_artifact)
+            model_trainer_artifact = self.start_model_training(data_transformation_artifact=data_transformation_artifact)  
+
          
         except Exception as e:
             raise ApplicationException(e, sys) from e

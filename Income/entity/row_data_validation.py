@@ -42,16 +42,22 @@ class IngestedDataValidation:
         except Exception as e:
             logging.info(f"Error checking missing values in whole column: {str(e)}")
             raise ApplicationException(e, sys) from e
-
-    def replace_null_values_with_null(self):
+        
+    def replace_null_values_with_nan(self):
         try:
-            logging.info("Replacing null values with 'NULL'...")
+            logging.info("Replacing null values with NaN...")
+            
+            # Log the shape before replacing null values
             df = pd.read_csv(self.validate_path)
-            df.fillna('NULL', inplace=True)
+            logging.info(f"Shape before replacing null values with NaN: {df.shape}")
+            
+            df.fillna(np.nan, inplace=True)
+            
+            # Log the shape after replacing null values
+            logging.info(f"Shape after replacing null values with NaN: {df.shape}")
         except Exception as e:
-            logging.info(f"Error replacing null values with 'NULL': {str(e)}")
+            logging.info(f"Error replacing null values with NaN: {str(e)}")
             raise ApplicationException(e, sys) from e
-
     def check_column_names(self) -> bool:
         try:
             logging.info("Checking column names...")

@@ -19,3 +19,7 @@ DataTransformationConfig = namedtuple("DataTransformationConfig",[  "transformed
                                                                     "transformed_target_test_path",
                                                                   "preprocessed_object_file_path",
                                                                   "feature_engineering_object_file_path"])
+
+
+
+ModelTrainerConfig = namedtuple("ModelTrainerConfig",["trained_model_file_path","saved_model_file_path"])

@@ -18,6 +18,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler,LabelEncoder
+from sklearn.compose import make_column_transformer
+from sklearn.compose import make_column_transformer
+from sklearn.compose import make_column_transformer
 
 # Class in this file 
     # DataTransformation 
@@ -63,14 +66,21 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
     
                                 ######################### Data Modification ############################
         
-    def drop_rows_with_nan(self,X):
-        # Check for NaN values
-        has_nan = X.isna().any(axis=1)
+    def drop_rows_with_nan(self, X: pd.DataFrame):
+        # Log the shape before dropping NaN values
+        logging.info(f"Shape before dropping NaN values: {X.shape}")
         
         # Drop rows with NaN values
-        X = X[~has_nan]
+        X = X.dropna()
+        X.to_csv("Nan_values_removed.csv", index=False)
+        
+        # Log the shape after dropping NaN values
+        logging.info(f"Shape after dropping NaN values: {X.shape}")
+        
+        logging.info("Dropped NaN values.")
         
         return X
+ 
     
     def replace_with_others(self,X,threshold):
         
@@ -107,7 +117,7 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
         
         logging.info(f"DataFrame shape before removing duplicates: {X.shape}")
         num_before = len(X)
-        X.drop_duplicates(keep='last', inplace=True)
+        X.drop_duplicates(inplace = True)
         num_after = len(X)
         
         num_duplicates = num_before - num_after
@@ -116,14 +126,19 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
         
         return X
 
-    def Filtering_Special_Characters(self,X):
+    def Filtering_Special_Characters(self,X:pd.DataFrame):
         try:
             
             
         
         # Filter out rows with '?' values
-            X = X.loc[~(X == '?').any(axis=1)]
+            logging.info(f" Shape Before replacing special charaters :{X.shape}")
+            X = X.replace('?', np.nan)
             
+            
+            logging.info(f" Shape after replacing special charaters :{X.shape}")
+            logging.info("Removed special characters")
+            X.to_csv('special_characters.csv',index=False)
         
             return X
         
@@ -151,20 +166,23 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
         # Dropping irrelavant columns 
         X=self.drop_columns(data)
         
-        # Modifying datatype Object ---> categorical
-        X=self.data_type_modification(X)
-        
         # Filtering special character "?"
         X=self.Filtering_Special_Characters(X)
         
+        # Drop rows with nan
+        X=self.drop_rows_with_nan(X)
+        
         # Removing duplicated rows 
         X=self.remove_duplicate_rows_keep_last(X)
+        
+        # Modifying datatype Object ---> categorical
+        X=self.data_type_modification(X)
         
         # Drop rows with nan
         X=self.drop_rows_with_nan(X)
         
         # Passing threshold in percentage 
-        X=self.replace_with_others(X,0.2)
+        X=self.replace_with_others(X,0.02)
         
         return X
     
@@ -212,21 +230,24 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
         
         return outliers
 
-    def remove_outliers(self, data, outliers):
+    def outliers_replaced(self, data, outliers):
         # Loop through columns with outliers
         for col, col_outliers in outliers.items():
-            # Remove outliers from the data
-            data = data[~data[col].isin(col_outliers)]
+            # Calculate the median for the column
+            col_median = data[col].median()
+            
+            # Replace outliers with the median
+            data.loc[data[col].isin(col_outliers), col] = col_median
             
             # Logging
-            logging.info(f"Removed {len(col_outliers)} outliers from column '{col}'.")
+            logging.info(f"Replaced {len(col_outliers)} outliers in column '{col}' with median value: {col_median}.")
         
         return data
     
     def outlier(self,X):
         
         outliers=self.detect_outliers(X)
-        X=self.remove_outliers(X,outliers)
+        X=self.outliers_replaced(X,outliers)
 
         return X
     
@@ -234,23 +255,25 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
     
     
     
-    def data_wrangling(self,X):
+    def data_wrangling(self,X:pd.DataFrame):
         try:
 
             
             # Data Modification 
-            data=self.run_data_modification(data=X)
+            data_modified=self.run_data_modification(data=X)
             
             logging.info(" Data Modification Done")
             
             # Outlier Detection and Removal
-            data = self.outlier(data)
+            outliers_removed:pd.DataFrame = self.outlier(data_modified)
+            
+            outliers_removed.to_csv("outliers_removed.csv",index=False)
             
             logging.info(" Outliers detection and removal Done ")
             
 
             
-            return data
+            return outliers_removed
     
         
         except Exception as e:
@@ -265,9 +288,9 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
         return self
     
     
-    def transform(self,X,y=None):
+    def transform(self,X:pd.DataFrame,y=None):
         try:    
-            data=self.data_wrangling(X)
+            data_modified=self.data_wrangling(X)
             
             numerical_columns = self.numerical_columns
             categorical_columns=self.categorical_columns
@@ -282,13 +305,16 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
             print("\n")
             
             
-            X = X[col]
+            data_modified:pd.DataFrame = data_modified[col]
             
-            data.to_csv("data_modified.csv",index=False)
+            data_modified.to_csv("data_modified_1.csv",index=False)
             logging.info(" Data Wrangaling Done ")
             
+            logging.info(f"Original Data  : {X.shape}")
+            logging.info(f"Shapde Modified Data : {data_modified.shape}")
+         
             
-            arr = X.values
+            arr = data_modified.values
                 
             return arr
         except Exception as e:
@@ -344,43 +370,39 @@ class DataTransformation:
         
     def get_data_transformer_object(self):
         try:
-
-
-       
             logging.info('Creating Data Transformer Object')
-
+            
 
             numerical_columns = self.numerical_columns
             categorical_columns = self.categorical_columns
-            target_column = self.target_column_name
 
-            # Define transformers for numerical and categorical columns
+            # Define transformer for numerical columns
+            numerical_transformer = Pipeline([
+                ('imputer', SimpleImputer(strategy='median')),
+                ('scaler', StandardScaler())
+            ])
+
+            # Define transformer for categorical columns
+            categorical_transformer = Pipeline([
+                ('imputer', SimpleImputer(strategy='most_frequent')),
+                ('encoder', OneHotEncoder(handle_unknown='ignore', sparse=False))
+            ])
+
+            # Create column transformer with numerical and categorical transformers
             preprocessor = ColumnTransformer(
                 transformers=[
-                    ('numerical', Pipeline([
-                        ('imputer', SimpleImputer(strategy='median')),
-                        ('log_transform', FunctionTransformer(np.log1p, validate=False)),
-                        ('scaler', StandardScaler())
-                    ]), numerical_columns),
-                    ('categorical', Pipeline([
-                        ('imputer', SimpleImputer(strategy='most_frequent')),
-                        ('encoder', OneHotEncoder(handle_unknown='ignore', sparse=False))
-                    ]), categorical_columns)
-
-                ])
-
+                    ('numerical', numerical_transformer, numerical_columns),
+                    ('categorical', categorical_transformer, categorical_columns)
+                ]
+            )
 
             logging.info('Data transformations created successfully')
             return preprocessor
 
         except Exception as e:
+            logging.error('An error occurred during data transformation')
             raise ApplicationException(e, sys) from e
         
-        
-        
-
-    
-
 
 
 
@@ -417,24 +439,29 @@ class DataTransformation:
             fe_obj = self.get_feature_engineering_object()
             
             logging.info(f"Applying feature engineering object on training dataframe and testing dataframe")
-            
+            logging.info(">>>" * 20 + " Training data " + "<<<" * 20)
             logging.info(f"Feature Enineering - Train Data ")
             feature_eng_train_arr = fe_obj.fit_transform(train_df)
-            
+            logging.info(">>>" * 20 + " Test data " + "<<<" * 20)
             logging.info(f"Feature Enineering - Test Data ")
             feature_eng_test_arr = fe_obj.transform(test_df)
+            
+            
             
             # Converting featured engineered array into dataframe
             logging.info(f"Converting featured engineered array into dataframe.")
             
             feature_eng_train_df = pd.DataFrame(feature_eng_train_arr,columns=col)
+            feature_eng_train_df.to_csv('feature_eng_train_df.csv',index=False)
             
             logging.info(f"Feature Engineering - Train Completed")
             
             feature_eng_test_df = pd.DataFrame(feature_eng_test_arr,columns=col)
+            feature_eng_test_df.to_csv('feature_eng_test_df.csv',index=False)
             
             #logging.info(f" Columns in feature enginering test {feature_eng_test_df.columns}")
             logging.info(f"Saving feature engineered training and testing dataframe.")
+            
             
             
             # Train and Test Dataframe
@@ -457,8 +484,8 @@ class DataTransformation:
             target_test_encoded = label_encoder.transform(target_feature_test_df)
             
             # Reshape the target arrays to 1D shape
-            target_train_encoded = np.ravel(target_train_encoded)
-            target_test_encoded = np.ravel(target_test_encoded)
+            target_train_encoded = target_train_encoded
+            target_test_encoded = target_test_encoded
             
                                                 #############################
                         
@@ -471,6 +498,7 @@ class DataTransformation:
 
             train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
             test_arr = preprocessing_obj.transform(input_feature_test_df)
+
 
             logging.info("Transformation completed successfully")
                                 ###############################################################

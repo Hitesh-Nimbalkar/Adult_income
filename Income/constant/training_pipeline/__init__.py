@@ -16,3 +16,4 @@ DROP_COLUMN_KEY='drop_columns'
 from Income.constant.training_pipeline.data_ingestion import *
 from Income.constant.training_pipeline.data_validation import *
 from Income.constant.training_pipeline.data_transformation import *
+from Income.constant.training_pipeline.model_trainer import *
