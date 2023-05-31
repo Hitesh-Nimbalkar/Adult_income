@@ -129,9 +129,15 @@ class Configuration:
                                                    model_trainer_config[MODEL_TRAINER_TRAINED_MODEL_DIR],
                                                    model_trainer_config[MODEL_TRAINER_TRAINED_MODEL_FILE_NAME_KEY])
             saved_model_file_path=os.path.join(ROOT_DIR,SAVED_MODEL_DIRECTORY,MODEL_FILE_NAME)
+            
+            saved_report_file_path=os.path.join(ROOT_DIR,SAVED_MODEL_DIRECTORY,MODEL_REPORT_FILE)
+            model_artifact_report=os.path.join(model_trainer_artifact_dir,
+                                                   model_trainer_config[MODEL_TRAINER_TRAINED_MODEL_DIR],MODEL_REPORT_FILE)
  
             model_trainer_config = ModelTrainerConfig(trained_model_file_path=trained_model_file_path,
-                                                      saved_model_file_path=saved_model_file_path)
+                                                      saved_model_file_path=saved_model_file_path,
+                                                      saved_model_report_path=saved_report_file_path,
+                                                      model_artifact_report=model_artifact_report)
             logging.info(f"Model Trainer Config : {model_trainer_config}")
             return model_trainer_config
         except Exception as e:

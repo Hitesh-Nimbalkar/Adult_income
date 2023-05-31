@@ -6,3 +6,4 @@ MODEL_TRAINER_TRAINED_MODEL_FILE_NAME_KEY = "model_file_name"
 
 SAVED_MODEL_DIRECTORY='saved_models'
 MODEL_FILE_NAME='model.pkl'
+MODEL_REPORT_FILE='model_report.yaml'

@@ -22,4 +22,7 @@ DataTransformationConfig = namedtuple("DataTransformationConfig",[  "transformed
 
 
 
-ModelTrainerConfig = namedtuple("ModelTrainerConfig",["trained_model_file_path","saved_model_file_path"])
+ModelTrainerConfig = namedtuple("ModelTrainerConfig",["trained_model_file_path","saved_model_file_path","saved_model_report_path",
+                                                      "model_artifact_report"])
+
+ModelEvaluationConfig = namedtuple('ModelEvaluationConfig', ['model_name', 'accuracy', 'f1_score'])

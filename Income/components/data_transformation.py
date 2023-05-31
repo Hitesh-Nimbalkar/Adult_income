@@ -372,9 +372,11 @@ class DataTransformation:
         try:
             logging.info('Creating Data Transformer Object')
             
-
             numerical_columns = self.numerical_columns
             categorical_columns = self.categorical_columns
+            
+            numerical_indices = [0, 1]  # Specify the numerical indices
+            categorical_indices = [2, 3, 4, 5, 6, 7, 8, 9]  # Specify the categorical indices
 
             # Define transformer for numerical columns
             numerical_transformer = Pipeline([
@@ -388,17 +390,16 @@ class DataTransformation:
                 ('encoder', OneHotEncoder(handle_unknown='ignore', sparse=False))
             ])
 
-            # Create column transformer with numerical and categorical transformers
+            # Create column transformer with numerical and categorical transformers and assigned indices
             preprocessor = ColumnTransformer(
                 transformers=[
-                    ('numerical', numerical_transformer, numerical_columns),
-                    ('categorical', categorical_transformer, categorical_columns)
+                    ('numerical', numerical_transformer, numerical_indices),
+                    ('categorical', categorical_transformer, categorical_indices)
                 ]
             )
 
             logging.info('Data transformations created successfully')
             return preprocessor
-
         except Exception as e:
             logging.error('An error occurred during data transformation')
             raise ApplicationException(e, sys) from e
@@ -476,22 +477,29 @@ class DataTransformation:
                                             ######## TARGET COLUMN ##########
             # Create an instance of LabelEncoder
             
-            logging.info("Label encoding target Column")
+            logging.info("Label encoding target column")
             label_encoder = LabelEncoder()
 
             # Apply label encoding to the target column
             target_train_encoded = label_encoder.fit_transform(target_feature_train_df)
             target_test_encoded = label_encoder.transform(target_feature_test_df)
-            
+
             # Reshape the target arrays to 1D shape
-            target_train_encoded = target_train_encoded
-            target_test_encoded = target_test_encoded
+            target_train_encoded = target_train_encoded.ravel()
+            target_test_encoded = target_test_encoded.ravel()
+
+            # Log the encoded values
+            logging.info("Encoded target_train_encoded:")
+            logging.info(target_train_encoded)
+            logging.info("Encoded target_test_encoded:")
+            logging.info(target_test_encoded)
             
+          
                                                 #############################
                         
                                     ############ Input Fatures transformation########
             ## Preprocessing 
-            logging.info(f"Applying preprocessing object on training dataframe and testing dataframe")
+            logging.info("*" * 20 + " Applying preprocessing object on training dataframe and testing dataframe " + "*" * 20)
             preprocessing_obj = self.get_data_transformer_object()
 
             col = numerical_columns + categorical_columns
@@ -499,8 +507,14 @@ class DataTransformation:
             train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
             test_arr = preprocessing_obj.transform(input_feature_test_df)
 
+            # Log the shape of train_arr
+            logging.info(f"Shape of train_arr: {train_arr.shape}")
+
+            # Log the shape of test_arr
+            logging.info(f"Shape of test_arr: {test_arr.shape}")
 
             logging.info("Transformation completed successfully")
+
                                 ###############################################################
             
             # Saving the Transformed array ----> csv 
