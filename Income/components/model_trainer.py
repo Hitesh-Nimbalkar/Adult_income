@@ -52,9 +52,9 @@ class ModelTrainer:
             # Define the models and their hyperparameters
             # Create a list of classification models with hyperparameters
             self.models = [
-                        # ('Logistic Regression', LogisticRegression(), {'model__C': [0.1, 1, 10]}),
-                         ('Decision Tree', DecisionTreeClassifier(), {'model__max_depth': [None, 5, 10,15,20]}),
-                         ('Random Forest', RandomForestClassifier(), {'model__max_depth': [15, 20, 25, 30, 40], 'model__n_estimators': [150, 200]})
+                        # ('Logistic_Regression', LogisticRegression(), {'model__C': [0.1, 1, 10]}),
+                         ('Decision_Tree', DecisionTreeClassifier(), {'model__max_depth': [None, 5, 10]}),
+                         ('Random_Forest', RandomForestClassifier(), {'model__max_depth': [15, 20, 25, 30, 40], 'model__n_estimators': [150, 200]})
 
                         #('KNN', KNeighborsClassifier(), {'model__n_neighbors': [3, 5, 7]}),
                         # ('SVM', SVC(), {'model__C': [0.1, 1, 10]})
@@ -94,7 +94,7 @@ class ModelTrainer:
                 grid_search.fit(self.input_train_array, self.target_train_array)
                 end_time = time.time()
 
-                # Calculate accuracy and F1 score on test set using best model
+                # Calculate accuracy and F1_Score on test set using best model
                 best_model = grid_search.best_estimator_
                 y_pred = best_model.predict(self.input_test_array)
                 accuracy = accuracy_score(self.target_test_array, y_pred)
@@ -104,17 +104,17 @@ class ModelTrainer:
                 training_time = end_time - start_time
 
                 # Append results to list
-                results.append({'Model': model_name, 'Accuracy': accuracy, 'F1 Score': f1, 'Training Time': training_time})
+                results.append({'Model': model_name, 'Accuracy': accuracy, 'F1_Score': f1, 'Training Time': training_time})
 
-            # Select the best model based on the F1 score
-            best_f1_model = max(results, key=lambda x: x['F1 Score'])
+            # Select the best model based on the F1_Score
+            best_f1_model = max(results, key=lambda x: x['F1_Score'])
 
             # Log the results
             logging.info("Model Training Results:")
             for result in results:
                 logging.info(f"Model: {result['Model']}")
                 logging.info(f"Accuracy: {result['Accuracy']}")
-                logging.info(f"F1 Score: {result['F1 Score']}")
+                logging.info(f"F1_Score: {result['F1_Score']}")
                 logging.info(f"Training Time: {result['Training Time']} seconds")
 
             return best_f1_model
@@ -124,7 +124,7 @@ class ModelTrainer:
 
     def select_best_model(self, results):
         best_accuracy_model = max(results, key=lambda x: x['Accuracy'])
-        best_f1_model = max(results, key=lambda x: x['F1 Score'])
+        best_f1_model = max(results, key=lambda x: x['F1_Score'])
         return best_accuracy_model, best_f1_model
     
     def initiate_model_training(self) -> ModelTrainerArtifact:
@@ -134,55 +134,62 @@ class ModelTrainer:
 
             logging.info("-----------------------")
 
-            # Log the F1 score and accuracy of the selected model
+            # Log the F1_Score and accuracy of the selected model
             selected_model_name = best_f1_model['Model']
-            selected_model_f1_score = best_f1_model['F1 Score']
+            selected_model_f1_score = best_f1_model['F1_Score']
             selected_model_accuracy = best_f1_model['Accuracy']
             logging.info(f"Selected Model: {selected_model_name}")
-            logging.info(f"F1 Score: {selected_model_f1_score}")
+            logging.info(f"F1_Score: {selected_model_f1_score}")
             logging.info(f"Accuracy: {selected_model_accuracy}")
 
             # Log a message with an emoji
             logging.info("Model training completed successfully! ")
 
             # Log a message with multiple emojis
-            logging.info("-----------------------")
             logging.info("Best model selected! ")
+            
+            
+            ## Save model to artifact 
             trained_model_object_file_path = self.model_trainer_config.trained_model_file_path
             save_object(file_path=trained_model_object_file_path, obj=best_f1_model)
-            save_object(file_path=self.model_trainer_config.saved_model_file_path, obj=best_f1_model)
-            saved_moled_file_path=self.model_trainer_config.saved_model_file_path
+            # Convert parameter values to strings
+            selected_model_name_str = str(selected_model_name)
+            selected_model_f1_score_str = str(selected_model_f1_score)
+            selected_model_accuracy_str = str(selected_model_accuracy)
             
-
             # Create a report
-            report = {'Model Name': selected_model_name, 'F1 Score': selected_model_f1_score, 'Accuracy': selected_model_accuracy}
-            
+            report = {'Model Name': selected_model_name_str, 'F1_Score': selected_model_f1_score_str, 'Accuracy':selected_model_accuracy_str}
             
             # Save report in artifact folder
-            model_artifact_path=self.model_trainer_config.model_artifact_report
-            report_file_path =model_artifact_path  
+            model_artifact_report_path=self.model_trainer_config.model_artifact_report
+            report_file_path =model_artifact_report_path  
             with open(report_file_path, 'w') as file:
-                yaml.dump(report, file)
+                yaml.safe_dump(report, file)
             logging.info("-----------------------") 
             
             
-            saved_model_report_path = self.model_trainer_config.saved_model_report_path
-            # Save report as YAML file at saved Model location 
-            report_file_path = saved_model_report_path 
-            with open(report_file_path, 'w') as file:
-                yaml.dump(report, file)
+            saved_model_file_path = self.model_trainer_config.saved_model_file_path
+            saved_model_report_path=self.model_trainer_config.saved_model_report_path
+
+
+
+
             logging.info("-----------------------")
             
-
+            logging.info(f"trained_model : {trained_model_object_file_path}")
+            logging.info(f" Trained model report : {model_artifact_report_path}")
+            logging.info(f" Saved Model file path : {saved_model_file_path}")
+            logging.info(f" Saved Model Report path : {saved_model_report_path}")
             
             
             logging.info("Report created")
             model_trainer_artifact = ModelTrainerArtifact(is_trained=True,
                                                         message="Model Training Done!!",
                                                         trained_model_object_file_path=trained_model_object_file_path,
-                                                        saved_model_file_path=saved_moled_file_path,
-                                                        saved_model_report=saved_model_report_path,
-                                                        model_artifact_report=model_artifact_path)
+                                                        model_artifact_report=model_artifact_report_path,
+                                                        saved_model_file_path=saved_model_file_path,
+                                                        saved_model_report=saved_model_report_path
+                                                        )
 
             logging.info(f"Model Trainer Artifact: {model_trainer_artifact}")
             return model_trainer_artifact

@@ -535,10 +535,10 @@ class DataTransformation:
 
 
             
-            logging.info(f"Saving transformed TRAIN input arrays as csv at {transformed_input_train_path}")
-            logging.info(f"Saving transformed TRAIN target arrays as csv at {transformed_target_train_path}")
-            logging.info(f"Saving transformed TEST input arrays as csv at {transformed_input_test_path}")
-            logging.info(f"Saving transformed TEST target arrays as csv at {transformed_target_test_path}")
+            logging.info(f"Saving transformed TRAIN input arrays  {transformed_input_train_path}")
+            logging.info(f"Saving transformed TRAIN target arrays {transformed_target_train_path}")
+            logging.info(f"Saving transformed TEST input arrays  {transformed_input_test_path}")
+            logging.info(f"Saving transformed TEST target arrays {transformed_target_test_path}")
             
             
             logging.info("Saving Feature Engineering Object")
@@ -577,5 +577,3 @@ class DataTransformation:
         except Exception as e:
             raise ApplicationException(e,sys) from e
 
-    def __del__(self):
-        logging.info(f"\n{'*'*20} Data Transformation log completed {'*'*20}\n\n")

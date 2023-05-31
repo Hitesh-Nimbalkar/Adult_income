@@ -1,22 +1,22 @@
 
 from Income.exception import ApplicationException
+from Income.logger import logging
 import sys
 import os
 from Income.entity.config_entity import *
 from Income.entity.artifact_entity import *
-
-
+from Income.utils.utils import read_yaml,load_pickle_object
 
 
 class ModelEvaluation:
 
 
-    def __init__(self,model_eval_config:ModelEvaluationConfig,
+    def __init__(self,
                     data_validation_artifact:DataValidationArtifact,
                     model_trainer_artifact:ModelTrainerArtifact):
         
         try:
-            self.model_eval_config=model_eval_config
+
             self.data_validation_artifact=data_validation_artifact
             self.model_trainer_artifact=model_trainer_artifact
         except Exception as e:
@@ -24,70 +24,77 @@ class ModelEvaluation:
         
         
         
-    def initiate_model_evaluation(self)->ModelEvaluationArtifact:
+    def initiate_model_evaluation(self) -> ModelEvaluationArtifact:
         try:
-            model_trained_artifact=self.model_trainer_artifact.trained_model_object_file_path
-            report=self.model_trainer_artifact.Report
+            logging.info(" Model Evaluation Started ")
+            ## Artifact trained Model  files
+            model_trained_artifact_path = self.model_trainer_artifact.trained_model_object_file_path
+            model_trained_report = self.model_trainer_artifact.model_artifact_report
             
-            saved_model=self.model_trainer_artifact
+            # Saved Model files
+            saved_model_report_path = self.model_trainer_artifact.saved_model_report
+            saved_model_path = self.model_trainer_artifact.saved_model_file_path
 
-            #valid train and test file dataframe
-            train_df = pd.read_csv(valid_train_file_path)
-            test_df = pd.read_csv(valid_test_file_path)
-
-            df = pd.concat([train_df,test_df])
-            y_true = df[TARGET_COLUMN]
-            y_true.replace(TargetValueMapping().to_dict(),inplace=True)
-            df.drop(TARGET_COLUMN,axis=1,inplace=True)
-
-            train_model_file_path = self.model_trainer_artifact.trained_model_file_path
-            model_resolver = ModelResolver()
-            is_model_accepted=True
-
-
-            if not model_resolver.is_model_exists():
-                model_evaluation_artifact = ModelEvaluationArtifact(
-                    is_model_accepted=is_model_accepted, 
-                    improved_accuracy=None, 
-                    best_model_path=None, 
-                    trained_model_path=train_model_file_path, 
-                    train_model_metric_artifact=self.model_trainer_artifact.test_metric_artifact, 
-                    best_model_metric_artifact=None)
-                logging.info(f"Model evaluation artifact: {model_evaluation_artifact}")
-                return model_evaluation_artifact
-
-            latest_model_path = model_resolver.get_best_model_path()
-            latest_model = load_object(file_path=latest_model_path)
-            train_model = load_object(file_path=train_model_file_path)
             
-            y_trained_pred = train_model.predict(df)
-            y_latest_pred  =latest_model.predict(df)
+            
+            logging.info(f" Artifact Trained model :")
 
-            trained_metric = get_classification_score(y_true, y_trained_pred)
-            latest_metric = get_classification_score(y_true, y_latest_pred)
+            # Load the model evaluation report from the saved YAML file
+            saved_model_report_data = read_yaml(file_path=saved_model_report_path)
+            model_trained_report_data = read_yaml(file_path=model_trained_report)
+            
+            
+            # Loading the models
+            saved_model = load_pickle_object(file_path=saved_model_path)
+            artifact_model = load_pickle_object(file_path=model_trained_artifact_path)
 
-            improved_accuracy = trained_metric.f1_score-latest_metric.f1_score
-            if self.model_eval_config.change_threshold < improved_accuracy:
-                #0.02 < 0.03
-                is_model_accepted=True
+            # Compare the F1_Scores and accuracy of the two models
+            saved_model_f1_score = float(saved_model_report_data['F1_Score'])
+            saved_model_accuracy = float(model_trained_report_data['Accuracy'])
+
+            artifact_model_f1_score =float( model_trained_report_data['F1_Score'])
+            artifact_model_accuracy = float(saved_model_report_data['Accuracy'])
+
+            # Compare the models and log the result
+            if artifact_model_f1_score > saved_model_f1_score:
+                logging.info("Trained model outperforms the saved model!")
+                model_path = model_trained_artifact_path
+                model_report_path = model_trained_report
+                model_name = "Trained Model"
+                F1_Score = artifact_model_f1_score
+                logging.info(f"F1_Score : {F1_Score}")
+                accuracy = artifact_model_accuracy
+                logging.info(f" Model Accuracy : {accuracy}")
+            elif artifact_model_f1_score < saved_model_f1_score:
+                logging.info("Saved model outperforms the trained model!")
+                model_path = saved_model_path
+                model_report_path = saved_model_report_path
+                model_name = "Saved Model"
+                F1_Score = saved_model_f1_score
+                accuracy = saved_model_accuracy
+                logging.info(f"F1_Score : {F1_Score}")
+                logging.info(f" Model Accuracy : {accuracy}")
             else:
-                is_model_accepted=False
+                logging.info("Both models have the same F1_Score.")
+                F1_Score = saved_model_f1_score
+                accuracy = saved_model_accuracy
+                model_path = saved_model_path
+                model_report_path = saved_model_report_path
+                model_name = "Saved Model"
+                
+                
 
-            
-            model_evaluation_artifact = ModelEvaluationArtifact(
-                    is_model_accepted=is_model_accepted, 
-                    improved_accuracy=improved_accuracy, 
-                    best_model_path=latest_model_path, 
-                    trained_model_path=train_model_file_path, 
-                    train_model_metric_artifact=trained_metric, 
-                    best_model_metric_artifact=latest_metric)
+            # Create a model evaluation artifact
+            model_evaluation = ModelEvaluationArtifact(model_name=model_name, F1_Score=F1_Score, accuracy=accuracy,
+                                                    model=model_path, model_report_path=model_report_path)
 
-            model_eval_report = model_evaluation_artifact.__dict__
+            logging.info("Model evaluation completed successfully!")
 
-            #save the report
-            write_yaml_file(self.model_eval_config.report_file_path, model_eval_report)
-            logging.info(f"Model evaluation artifact: {model_evaluation_artifact}")
-            return model_evaluation_artifact
-            
+            return model_evaluation
         except Exception as e:
-            raise ApplicationException(e,sys)
+            logging.error("Error occurred during model evaluation!")
+            raise ApplicationException(e, sys) from e
+
+
+    def __del__(self):
+        logging.info(f"\n{'*'*20} Model evaluation log completed {'*'*20}\n\n")

@@ -6,7 +6,10 @@ from Income.components.data_ingestion import DataIngestion
 from Income.components.data_validation import DataValidation
 from Income.components.data_transformation import DataTransformation
 from Income.components.model_trainer import ModelTrainer
+from Income.components.model_evaluation import ModelEvaluation
+from Income.components.model_pusher import ModelPusher
 from Income.entity.artifact_entity import *
+from Income.entity.config_entity import *
 
 
 
@@ -58,6 +61,41 @@ class Pipeline():
         except Exception as e:
             raise ApplicationException(e,sys) from e  
         
+    def start_model_evaluation(self,data_validation_artifact:DataValidationArtifact,
+                                 model_trainer_artifact:ModelTrainerArtifact,
+                                ):
+        try:
+    
+            model_eval = ModelEvaluation(data_validation_artifact, model_trainer_artifact)
+            model_eval_artifact = model_eval.initiate_model_evaluation()
+            return model_eval_artifact
+        except  Exception as e:
+            raise  ApplicationException(e,sys)
+        
+        
+    
+    def start_model_evaluation(self,data_validation_artifact:DataValidationArtifact,
+                                 model_trainer_artifact:ModelTrainerArtifact,
+                                ):
+        try:
+            model_eval = ModelEvaluation(data_validation_artifact, model_trainer_artifact)
+            model_eval_artifact = model_eval.initiate_model_evaluation()
+            return model_eval_artifact
+        except  Exception as e:
+            raise  ApplicationException(e,sys)
+        
+    def start_model_pusher(self,model_eval_artifact:ModelEvaluationArtifact):
+        try:
+            model_pusher = ModelPusher(model_eval_artifact)
+            model_pusher_artifact = model_pusher.initiate_model_pusher()
+            return model_pusher_artifact
+        except  Exception as e:
+            raise  ApplicationException(e,sys)
+        
+        
+        
+        
+        
     def run_pipeline(self):
         try:
              #data ingestion
@@ -67,7 +105,8 @@ class Pipeline():
             data_transformation_artifact = self.start_data_transformation(data_ingestion_artifact=data_ingestion_artifact,
                                                     data_validation_artifact=data_validation_artifact)
             model_trainer_artifact = self.start_model_training(data_transformation_artifact=data_transformation_artifact)  
-
+            model_eval_artifact = self.start_model_evaluation(data_validation_artifact, model_trainer_artifact)
+            model_pusher_artifact = self.start_model_pusher(model_eval_artifact)
          
         except Exception as e:
             raise ApplicationException(e, sys) from e
