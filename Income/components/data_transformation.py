@@ -372,8 +372,8 @@ class DataTransformation:
         try:
             logging.info('Creating Data Transformer Object')
             
-            numerical_columns = self.numerical_columns
-            categorical_columns = self.categorical_columns
+            #numerical_columns = self.numerical_columns
+            #categorical_columns = self.categorical_columns
             
             numerical_indices = [0, 1]  # Specify the numerical indices
             categorical_indices = [2, 3, 4, 5, 6, 7, 8, 9]  # Specify the categorical indices
@@ -418,6 +418,8 @@ class DataTransformation:
             logging.info(f"Loading training and test data as pandas dataframe.")
             train_df = pd.read_csv(train_file_path)
             test_df = pd.read_csv(test_file_path)
+            
+            logging.info(f" Tranin columns {train_df.columns}")
             
             # Schema.yaml ---> Extracting target column name
             target_column_name = self.target_column_name
@@ -493,6 +495,7 @@ class DataTransformation:
             logging.info(target_train_encoded)
             logging.info("Encoded target_test_encoded:")
             logging.info(target_test_encoded)
+
             
           
                                                 #############################
@@ -506,7 +509,8 @@ class DataTransformation:
 
             train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
             test_arr = preprocessing_obj.transform(input_feature_test_df)
-
+            
+            
             # Log the shape of train_arr
             logging.info(f"Shape of train_arr: {train_arr.shape}")
 

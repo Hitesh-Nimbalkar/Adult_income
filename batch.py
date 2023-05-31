@@ -5,7 +5,7 @@ from Income.exception import ApplicationException
 import pandas as pd
 import pickle
 from sklearn.pipeline import Pipeline
-from Income.utils.utils import read_yaml
+from Income.utils.utils import read_yaml,load_pickle_object
 from Income.entity.artifact_entity import ModelTrainerArtifact,DataTransformationArtifact
 import sys 
 import pymongo
@@ -92,25 +92,22 @@ class batch_prediction:
                 preprocessor = pickle.load(f)
 
             # Load the model separately
-            with open(self.model_file_path, 'rb') as f:
-                model = pickle.load(f)
-                
-            logging.info(f" Model File Path : {self.model_file_path}")
-                
-                        # Feature Labels 
+            model =load_pickle_object(file_path=self.model_file_path)
+
+            logging.info(f"Model File Path: {self.model_file_path}")
+
+            # Feature Labels
             schema = read_yaml("config/schema.yaml")
             input_features = schema['numerical_columns']
             categorical_features = schema['categorical_columns']
             target_features = schema['target_column']
             drop_columns = schema['drop_columns']
-            all_columns=input_features+categorical_features+target_features
-                
+            all_columns = input_features + categorical_features + target_features
+
             # Create the feature engineering pipeline
             feature_engineering_pipeline = Pipeline([
                 ('feature_engineering', feature_pipeline)
             ])
-            
-            
 
             # Read the input file
             df = pd.read_csv(self.input_file_path)
@@ -122,24 +119,20 @@ class batch_prediction:
             # Save the feature-engineered data as a CSV file
             FEATURE_ENG_PATH = FEATURE_ENG  # Specify the desired path for saving the CSV file
             os.makedirs(FEATURE_ENG_PATH, exist_ok=True)
-            file_path = os.path.join(FEATURE_ENG, 'batch_fea_eng.csv')
+            file_path = os.path.join(FEATURE_ENG_PATH, 'batch_fea_eng.csv')
             df.to_csv(file_path, index=False)
             logging.info("Feature-engineered batch data saved as CSV.")
+            df=df.drop('income', axis=1)
             
-            
+            logging.info(f"Columns before transformation : {df.columns}")
+            # Transform the feature-engineered data using the preprocessor
+            transformed_data = preprocessor.transform(df)
+            logging.info(f"Transformed Data Shape: {transformed_data.shape}")
 
-        # Transform the feature-engineered data using the preprocessor
-            input_features=df.drop('income',axis=1)
-            logging.info(f'Columns in data frame :{input_features.columns}')
-            transformed_data = preprocessor.transform(input_features)
-            
-            print(type(transformed_data))
-            
-            logging.info(f" Transformed Data :{transformed_data.shape}")
-            
-    
             # Make predictions using the model
+            print(type(model))
             predictions = model.predict(transformed_data)
+            logging.info("Predictions done")
 
             # Create a DataFrame from the predictions array
             df_predictions = pd.DataFrame(predictions, columns=['prediction'])
@@ -147,13 +140,12 @@ class batch_prediction:
             # Save the predictions to a CSV file
             BATCH_PREDICTION_PATH = BATCH_PREDICTION  # Specify the desired path for saving the CSV file
             os.makedirs(BATCH_PREDICTION_PATH, exist_ok=True)
-            csv_path = os.path.join(BATCH_PREDICTION, 'predictions.csv')
+            csv_path = os.path.join(BATCH_PREDICTION_PATH, 'predictions.csv')
             df_predictions.to_csv(csv_path, index=False)
             logging.info(f"Batch predictions saved to '{csv_path}'.")
 
         except Exception as e:
-            logging.error("An error occurred during batch prediction.")
- 
+            ApplicationException(e,sys) 
 
 
 

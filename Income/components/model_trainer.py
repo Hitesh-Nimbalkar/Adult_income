@@ -53,10 +53,10 @@ class ModelTrainer:
             # Create a list of classification models with hyperparameters
             self.models = [
                         # ('Logistic_Regression', LogisticRegression(), {'model__C': [0.1, 1, 10]}),
-                         ('Decision_Tree', DecisionTreeClassifier(), {'model__max_depth': [None, 5, 10]}),
+                        # ('Decision_Tree', DecisionTreeClassifier(), {'model__max_depth': [None, 5, 10]})
                         # ('Random_Forest', RandomForestClassifier(), {'model__max_depth': [15, 20, 25, 30, 40], 'model__n_estimators': [150, 200]})
 
-                        #('KNN', KNeighborsClassifier(), {'model__n_neighbors': [3, 5, 7]}),
+                        ('KNN', KNeighborsClassifier(), {'model__n_neighbors': [3, 5, 7]})
                         # ('SVM', SVC(), {'model__C': [0.1, 1, 10]})
                         ]
             
