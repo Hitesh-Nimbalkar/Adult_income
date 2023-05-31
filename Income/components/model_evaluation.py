@@ -6,7 +6,7 @@ import os
 from Income.entity.config_entity import *
 from Income.entity.artifact_entity import *
 from Income.utils.utils import read_yaml,load_pickle_object
-
+from Income.constant.training_pipeline import *
 
 class ModelEvaluation:
 
@@ -43,44 +43,59 @@ class ModelEvaluation:
             saved_model_report_data = read_yaml(file_path=saved_model_report_path)
             model_trained_report_data = read_yaml(file_path=model_trained_report)
             
-            
+
+
             # Loading the models
-            saved_model = load_pickle_object(file_path=saved_model_path)
-            artifact_model = load_pickle_object(file_path=model_trained_artifact_path)
-
-            # Compare the F1_Scores and accuracy of the two models
-            saved_model_f1_score = float(saved_model_report_data['F1_Score'])
-            saved_model_accuracy = float(model_trained_report_data['Accuracy'])
-
-            artifact_model_f1_score =float( model_trained_report_data['F1_Score'])
-            artifact_model_accuracy = float(saved_model_report_data['Accuracy'])
-
-            # Compare the models and log the result
-            if artifact_model_f1_score > saved_model_f1_score:
-                logging.info("Trained model outperforms the saved model!")
+            logging.info("Saved_models directory .....")
+            os.makedirs(SAVED_MODEL_DIRECTORY,exist_ok=True)
+            
+            # Check if SAVED_MODEL_DIRECTORY is empty
+            if not os.listdir(SAVED_MODEL_DIRECTORY):
+                artifact_model_f1_score =float( model_trained_report_data['F1_Score'])
+                artifact_model_accuracy = float(model_trained_report_data['Accuracy'])
+                model_name = "Artifact Model"
+                F1_Score = artifact_model_f1_score
+                accuracy = artifact_model_accuracy
                 model_path = model_trained_artifact_path
                 model_report_path = model_trained_report
-                model_name = "Trained Model"
-                F1_Score = artifact_model_f1_score
-                logging.info(f"F1_Score : {F1_Score}")
-                accuracy = artifact_model_accuracy
-                logging.info(f" Model Accuracy : {accuracy}")
-            elif artifact_model_f1_score < saved_model_f1_score:
-                logging.info("Saved model outperforms the trained model!")
-                model_path = saved_model_path
-                model_report_path = saved_model_report_path
-                model_name = "Saved Model"
-                F1_Score = saved_model_f1_score
-                accuracy = saved_model_accuracy
-                logging.info(f"F1_Score : {F1_Score}")
-                logging.info(f" Model Accuracy : {accuracy}")
+                
             else:
-                logging.info("Both models have the same F1_Score.")
-                F1_Score = saved_model_f1_score
-                accuracy = saved_model_accuracy
-                model_path = saved_model_path
-                model_report_path = saved_model_report_path
-                model_name = "Saved Model"
+                saved_model = load_pickle_object(file_path=saved_model_path)
+                artifact_model = load_pickle_object(file_path=model_trained_artifact_path)
+
+                # Compare the F1_Scores and accuracy of the two models
+                saved_model_f1_score = float(saved_model_report_data['F1_Score'])
+                saved_model_accuracy = float(saved_model_report_data['Accuracy'])
+
+                artifact_model_f1_score =float( model_trained_report_data['F1_Score'])
+                artifact_model_accuracy = float(model_trained_report_data['Accuracy'])
+
+                # Compare the models and log the result
+                if artifact_model_f1_score > saved_model_f1_score:
+                    logging.info("Trained model outperforms the saved model!")
+                    model_path = model_trained_artifact_path
+                    model_report_path = model_trained_report
+                    model_name = "Trained Model"
+                    F1_Score = artifact_model_f1_score
+                    logging.info(f"F1_Score : {F1_Score}")
+                    accuracy = artifact_model_accuracy
+                    logging.info(f" Model Accuracy : {accuracy}")
+                elif artifact_model_f1_score < saved_model_f1_score:
+                    logging.info("Saved model outperforms the trained model!")
+                    model_path = saved_model_path
+                    model_report_path = saved_model_report_path
+                    model_name = "Saved Model"
+                    F1_Score = saved_model_f1_score
+                    accuracy = saved_model_accuracy
+                    logging.info(f"F1_Score : {F1_Score}")
+                    logging.info(f" Model Accuracy : {accuracy}")
+                else:
+                    logging.info("Both models have the same F1_Score.")
+                    F1_Score = saved_model_f1_score
+                    accuracy = saved_model_accuracy
+                    model_path = saved_model_path
+                    model_report_path = saved_model_report_path
+                    model_name = "Saved Model"
                 
                 
 

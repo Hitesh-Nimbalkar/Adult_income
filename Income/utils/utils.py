@@ -102,3 +102,7 @@ def load_numpy_array_data(file_path: str, file_name: str) -> np.ndarray:
     
     
 
+def dump_model(model, file_path):
+    with open(file_path, 'wb') as file:
+        pickle.dump(model, file)
+    print(f"Model dumped successfully to {file_path}")
