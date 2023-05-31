@@ -43,6 +43,7 @@ class ModelTrainer:
             self.results = []
             
             ## Loading Numpy arrays 
+            logging.info
             self.input_train_array=load_numpy_array_data(file_path=self.data_transformation_artifact.transformed_input_train_path,file_name=DATA_TRANSFORMATION_INPUT_TRAIN)
             self.input_test_array=load_numpy_array_data(file_path=self.data_transformation_artifact.transformed_input_test_path,file_name=DATA_TRANSFORMATION_INPUT_TEST)
             self.target_train_array=load_numpy_array_data(file_path=self.data_transformation_artifact.transformed_target_train_path,file_name=DATA_TRANSFORMATION_TARGET_TRAIN)

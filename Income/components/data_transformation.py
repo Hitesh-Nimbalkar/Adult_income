@@ -72,7 +72,7 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
         
         # Drop rows with NaN values
         X = X.dropna()
-        X.to_csv("Nan_values_removed.csv", index=False)
+        #X.to_csv("Nan_values_removed.csv", index=False)
         
         # Log the shape after dropping NaN values
         logging.info(f"Shape after dropping NaN values: {X.shape}")
@@ -138,7 +138,7 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
             
             logging.info(f" Shape after replacing special charaters :{X.shape}")
             logging.info("Removed special characters")
-            X.to_csv('special_characters.csv',index=False)
+           # X.to_csv('special_characters.csv',index=False)
         
             return X
         
@@ -267,7 +267,7 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
             # Outlier Detection and Removal
             outliers_removed:pd.DataFrame = self.outlier(data_modified)
             
-            outliers_removed.to_csv("outliers_removed.csv",index=False)
+           # outliers_removed.to_csv("outliers_removed.csv",index=False)
             
             logging.info(" Outliers detection and removal Done ")
             
@@ -307,7 +307,7 @@ class Feature_Engineering(BaseEstimator, TransformerMixin):
             
             data_modified:pd.DataFrame = data_modified[col]
             
-            data_modified.to_csv("data_modified_1.csv",index=False)
+            data_modified.to_csv("data_modified.csv",index=False)
             logging.info(" Data Wrangaling Done ")
             
             logging.info(f"Original Data  : {X.shape}")
@@ -452,12 +452,12 @@ class DataTransformation:
             logging.info(f"Converting featured engineered array into dataframe.")
             
             feature_eng_train_df = pd.DataFrame(feature_eng_train_arr,columns=col)
-            feature_eng_train_df.to_csv('feature_eng_train_df.csv',index=False)
+            #feature_eng_train_df.to_csv('feature_eng_train_df.csv',index=False)
             
             logging.info(f"Feature Engineering - Train Completed")
             
             feature_eng_test_df = pd.DataFrame(feature_eng_test_arr,columns=col)
-            feature_eng_test_df.to_csv('feature_eng_test_df.csv',index=False)
+            #feature_eng_test_df.to_csv('feature_eng_test_df.csv',index=False)
             
             #logging.info(f" Columns in feature enginering test {feature_eng_test_df.columns}")
             logging.info(f"Saving feature engineered training and testing dataframe.")
