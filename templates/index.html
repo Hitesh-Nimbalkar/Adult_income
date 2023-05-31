@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Batch Prediction</title>
+</head>
+<body>
+    <h1>Batch Prediction</h1>
+    <form action="/batch" method="post" enctype="multipart/form-data">
+        <input type="file" name="csv_file" accept=".csv">
+        <input type="submit" value="Submit">
+    </form>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+    {% if prediction_result %}
+        <h3>Prediction Result:</h3>
+        <p>{{ prediction_result }}</p>
+    {% endif %}
+</body>
+</html>
