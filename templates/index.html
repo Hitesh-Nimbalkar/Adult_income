@@ -5,11 +5,11 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            text-align: center;
-            padding-left: 10px;
-            padding-right: 10px;
-            background-image: url('Money.jpg');
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             background-size: cover;
             background-position: center;
         }
@@ -61,174 +61,183 @@
             flex-direction: column;
             align-items: flex-start;
         }
+        .transparent-box {
+            background-color: rgba(128, 128, 128, 0.5);
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #333;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <h1>Batch Prediction</h1>
-    <form action="/batch" method="post" enctype="multipart/form-data">
-        <input type="file" name="csv_file" accept=".csv">
-        <input type="submit" value="Submit">
-    </form>
-    {% if prediction_type == 'batch' %}
-        {% if prediction_result %}
+    <div class="transparent-box">
+        <h1>Batch Prediction</h1>
+        <form action="/batch" method="post" enctype="multipart/form-data">
+            <input type="file" name="csv_file" accept=".csv">
+            <input type="submit" value="Submit">
+        </form>
+        {% if prediction_type == 'batch' %}
+            {% if prediction_result %}
+                <h3>Prediction Result:</h3>
+                <p>{{ prediction_result }}</p>
+            {% endif %}
+        {% endif %}
+
+        <h1>Instance Prediction</h1>
+        <form action="/instance" method="post">
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="text" name="age" required><br>
+            </div>
+            <div class="form-group">
+                <label for="hours_per_week">Hours per Week:</label>
+                <input type="text" name="hours_per_week" required><br>
+            </div>
+            <div class="form-group">
+                <label for="workclass">Workclass:</label>
+                <select name="workclass" required>
+                    <option value="Private">Private</option>
+                    <option value="Self-employed">Self-employed</option>
+                    <option value="Government">Government</option>
+                    <option value="Unemployed">Unemployed</option>
+                </select><br>
+            </div>
+            <div class="form-group">
+                <label for="education">Education:</label>
+                <select name="education" required>
+                    <option value="11th">11th</option>
+                    <option value="HS-grad">HS-grad</option>
+                    <option value="Assoc-acdm">Assoc-acdm</option>
+                    <option value="Some-college">Some-college</option>
+                    <option value="10th">10th</option>
+                    <option value="Prof-school">Prof-school</option>
+                    <option value="7th-8th">7th-8th</option>
+                    <option value="Bachelors">Bachelors</option>
+                    <option value="Masters">Masters</option>
+                    <option value="5th-6th">5th-6th</option>
+                    <option value="Assoc-voc">Assoc-voc</option>
+                    <option value="9th">9th</option>
+                    <option value="Doctorate">Doctorate</option>
+                    <option value="12th">12th</option>
+                    <option value="1st-4th">1st-4th</option>
+                    <option value="Preschool">Preschool</option>
+                </select><br>
+            </div>
+            <div class="form-group">
+                <label for="marital_status">Marital_status:</label>
+                <select name="marital_status" required>
+                    <option value="Never-married">Never Married</option>
+                    <option value="Married-civ-spouse">Married (Civilian Spouse)</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Separated">Separated</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Married-spouse-absent">Married (Spouse Absent)</option>
+                    <option value="Married-AF-spouse">Married (AF Spouse)</option>
+                </select><br>
+            </div>
+            <div class="form-group">
+                <label for="occupation">Occupation:</label>
+                <select name="occupation" required>
+                    <option value="Machine-op-inspct">Machine-op-inspct</option>
+                    <option value="Farming-fishing">Farming-fishing</option>
+                    <option value="Protective-serv">Protective-serv</option>
+                    <option value="Other-service">Other-service</option>
+                    <option value="Prof-specialty">Prof-specialty</option>
+                    <option value="Craft-repair">Craft-repair</option>
+                    <option value="Adm-clerical">Adm-clerical</option>
+                    <option value="Exec-managerial">Exec-managerial</option>
+                    <option value="Tech-support">Tech-support</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Priv-house-serv">Priv-house-serv</option>
+                    <option value="Transport-moving">Transport-moving</option>
+                    <option value="Handlers-cleaners">Handlers-cleaners</option>
+                    <option value="Armed-Forces">Armed-Forces</option>
+                </select><br>
+            </div>
+            <div class="form-group">
+                <label for="relationship">Relationship:</label>
+                <select name="relationship" required>
+                    <option value="Own-child">Own-child</option>
+                    <option value="Husband">Husband</option>
+                    <option value="Not-in-family">Not-in-family</option>
+                    <option value="Unmarried">Unmarried</option>
+                    <option value="Wife">Wife</option>
+                    <option value="Other-relative">Other-relative</option>
+                </select><br>
+            </div>
+            <div class="form-group">
+                <label for="race">Race:</label>
+                <select name="race" required>
+                    <option value="Black">Black</option>
+                    <option value="White">White</option>
+                    <option value="Other">Other</option>
+                    <option value="Amer-Indian-Eskimo">Amer-Indian-Eskimo</option>
+                    <option value="Asian-Pac-Islander">Asian-Pac-Islander</option>
+                </select><br>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select name="gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select><br>
+            </div>
+            <div class="form-group">
+                <label for="native_country">Native Country:</label>
+                <select name="native_country" required>
+                    <option value="United-States">United States</option>
+                    <option value="Mexico">Mexico</option>
+                    <option value="Philippines">Philippines</option>
+                    <option value="Germany">Germany</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Puerto-Rico">Puerto Rico</option>
+                    <option value="El-Salvador">El Salvador</option>
+                    <option value="India">India</option>
+                    <option value="Cuba">Cuba</option>
+                    <option value="England">England</option>
+                    <option value="Jamaica">Jamaica</option>
+                    <option value="South">South</option>
+                    <option value="China">China</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Dominican-Republic">Dominican Republic</option>
+                    <option value="Vietnam">Vietnam</option>
+                    <option value="Guatemala">Guatemala</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Poland">Poland</option>
+                    <option value="Columbia">Columbia</option>
+                    <option value="Taiwan">Taiwan</option>
+                    <option value="Haiti">Haiti</option>
+                    <option value="Iran">Iran</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="Nicaragua">Nicaragua</option>
+                    <option value="Peru">Peru</option>
+                    <option value="Greece">Greece</option>
+                    <option value="France">France</option>
+                    <option value="Ecuador">Ecuador</option>
+                    <option value="Ireland">Ireland</option>
+                    <option value="Hong">Hong</option>
+                    <option value="Trinadad&Tobago">Trinadad & Tobago</option>
+                    <option value="Cambodia">Cambodia</option>
+                    <option value="Laos">Laos</option>
+                    <option value="Thailand">Thailand</option>
+                    <option value="Yugoslavia">Yugoslavia</option>
+                    <option value="Outlying-US(Guam-USVI-etc)">Outlying-US(Guam-USVI-etc)</option>
+                    <option value="Hungary">Hungary</option>
+                    <option value="Scotland">Scotland</option>
+                    <option value="Honduras">Honduras</option>
+                    <option value="Holand-Netherlands">Holand-Netherlands</option>
+                </select><br>
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+        {% if prediction_type == 'instance' %}
+        {% if predicted_income_text %}
             <h3>Prediction Result:</h3>
-            <p>{{ prediction_result }}</p>
+            <p>{{ predicted_income_text }}</p>
         {% endif %}
     {% endif %}
-
-    <h1>Instance Prediction</h1>
-    <form action="/instance" method="post">
-        <div class="form-group">
-            <label for="age">Age:</label>
-            <input type="text" name="age" required><br>
-        </div>
-        <div class="form-group">
-            <label for="hours_per_week">Hours per Week:</label>
-            <input type="text" name="hours_per_week" required><br>
-        </div>
-        <div class="form-group">
-            <label for="workclass">Workclass:</label>
-            <select name="workclass" required>
-                <option value="Private">Private</option>
-                <option value="Self-employed">Self-employed</option>
-                <option value="Government">Government</option>
-                <option value="Unemployed">Unemployed</option>
-            </select><br>
-        </div>
-        <div class="form-group">
-            <label for="education">Education:</label>
-            <select name="education" required>
-                <option value="11th">11th</option>
-                <option value="HS-grad">HS-grad</option>
-                <option value="Assoc-acdm">Assoc-acdm</option>
-                <option value="Some-college">Some-college</option>
-                <option value="10th">10th</option>
-                <option value="Prof-school">Prof-school</option>
-                <option value="7th-8th">7th-8th</option>
-                <option value="Bachelors">Bachelors</option>
-                <option value="Masters">Masters</option>
-                <option value="5th-6th">5th-6th</option>
-                <option value="Assoc-voc">Assoc-voc</option>
-                <option value="9th">9th</option>
-                <option value="Doctorate">Doctorate</option>
-                <option value="12th">12th</option>
-                <option value="1st-4th">1st-4th</option>
-                <option value="Preschool">Preschool</option>
-            </select><br>
-        </div>
-        <div class="form-group">
-            <label for="marital_status">Marital_status:</label>
-            <select name="marital_status" required>
-                <option value="Never-married">Never Married</option>
-                <option value="Married-civ-spouse">Married (Civilian Spouse)</option>
-                <option value="Widowed">Widowed</option>
-                <option value="Separated">Separated</option>
-                <option value="Divorced">Divorced</option>
-                <option value="Married-spouse-absent">Married (Spouse Absent)</option>
-                <option value="Married-AF-spouse">Married (AF Spouse)</option>
-            </select><br>
-        </div>
-        <div class="form-group">
-            <label for="occupation">Occupation:</label>
-            <select name="occupation" required>
-                <option value="Machine-op-inspct">Machine-op-inspct</option>
-                <option value="Farming-fishing">Farming-fishing</option>
-                <option value="Protective-serv">Protective-serv</option>
-                <option value="Other-service">Other-service</option>
-                <option value="Prof-specialty">Prof-specialty</option>
-                <option value="Craft-repair">Craft-repair</option>
-                <option value="Adm-clerical">Adm-clerical</option>
-                <option value="Exec-managerial">Exec-managerial</option>
-                <option value="Tech-support">Tech-support</option>
-                <option value="Sales">Sales</option>
-                <option value="Priv-house-serv">Priv-house-serv</option>
-                <option value="Transport-moving">Transport-moving</option>
-                <option value="Handlers-cleaners">Handlers-cleaners</option>
-                <option value="Armed-Forces">Armed-Forces</option>
-            </select><br>
-        </div>
-        <div class="form-group">
-            <label for="relationship">Relationship:</label>
-            <select name="relationship" required>
-                <option value="Own-child">Own-child</option>
-                <option value="Husband">Husband</option>
-                <option value="Not-in-family">Not-in-family</option>
-                <option value="Unmarried">Unmarried</option>
-                <option value="Wife">Wife</option>
-                <option value="Other-relative">Other-relative</option>
-            </select><br>
-        </div>
-        <div class="form-group">
-            <label for="race">Race:</label>
-            <select name="race" required>
-                <option value="Black">Black</option>
-                <option value="White">White</option>
-                <option value="Other">Other</option>
-                <option value="Amer-Indian-Eskimo">Amer-Indian-Eskimo</option>
-                <option value="Asian-Pac-Islander">Asian-Pac-Islander</option>
-            </select><br>
-        </div>
-        <div class="form-group">
-            <label for="gender">Gender:</label>
-            <select name="gender" required>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select><br>
-        </div>
-        <div class="form-group">
-            <label for="native_country">Native Country:</label>
-            <select name="native_country" required>
-                <option value="United-States">United States</option>
-                <option value="Mexico">Mexico</option>
-                <option value="Philippines">Philippines</option>
-                <option value="Germany">Germany</option>
-                <option value="Canada">Canada</option>
-                <option value="Puerto-Rico">Puerto Rico</option>
-                <option value="El-Salvador">El Salvador</option>
-                <option value="India">India</option>
-                <option value="Cuba">Cuba</option>
-                <option value="England">England</option>
-                <option value="Jamaica">Jamaica</option>
-                <option value="South">South</option>
-                <option value="China">China</option>
-                <option value="Italy">Italy</option>
-                <option value="Dominican-Republic">Dominican Republic</option>
-                <option value="Vietnam">Vietnam</option>
-                <option value="Guatemala">Guatemala</option>
-                <option value="Japan">Japan</option>
-                <option value="Poland">Poland</option>
-                <option value="Columbia">Columbia</option>
-                <option value="Taiwan">Taiwan</option>
-                <option value="Haiti">Haiti</option>
-                <option value="Iran">Iran</option>
-                <option value="Portugal">Portugal</option>
-                <option value="Nicaragua">Nicaragua</option>
-                <option value="Peru">Peru</option>
-                <option value="Greece">Greece</option>
-                <option value="France">France</option>
-                <option value="Ecuador">Ecuador</option>
-                <option value="Ireland">Ireland</option>
-                <option value="Hong">Hong</option>
-                <option value="Trinadad&Tobago">Trinadad & Tobago</option>
-                <option value="Cambodia">Cambodia</option>
-                <option value="Laos">Laos</option>
-                <option value="Thailand">Thailand</option>
-                <option value="Yugoslavia">Yugoslavia</option>
-                <option value="Outlying-US(Guam-USVI-etc)">Outlying-US(Guam-USVI-etc)</option>
-                <option value="Hungary">Hungary</option>
-                <option value="Scotland">Scotland</option>
-                <option value="Honduras">Honduras</option>
-                <option value="Holand-Netherlands">Holand-Netherlands</option>
-            </select><br>
-        </div>
-        <input type="submit" value="Submit">
-    </form>
-    {% if prediction_type == 'instance' %}
-    {% if predicted_income_text %}
-        <h3>Prediction Result:</h3>
-        <p>{{ predicted_income_text }}</p>
-    {% endif %}
-{% endif %}
+    </div>
 </body>
 </html>
 
