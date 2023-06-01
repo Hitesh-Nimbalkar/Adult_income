@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from batch import batch_prediction
+from instance import instance_prediction_class
 import os
 from Income.logger import logging
 from Income.constant import *
@@ -54,9 +55,29 @@ def perform_batch_prediction():
     else:
         return render_template('index.html', prediction_type='batch', error='Invalid file type')
 
+@app.route("/instance", methods=["POST"])
+def perform_instance_prediction():
+    age = int(request.form['age'])
+    hours_per_week = int(request.form['hours_per_week'])
+    workclass = request.form['workclass']
+    education = request.form['education']
+    marital_status = request.form['marital_status']
+    occupation = request.form['occupation']
+    relationship = request.form['relationship']
+    race = request.form['race']
+    gender = request.form['gender']
+    native_country = request.form['native_country']
 
+    predictor = instance_prediction_class(age, hours_per_week, workclass, education, marital_status, occupation, relationship, race, gender, native_country)
+    predicted_income = predictor.predict_price_from_input()
+    if predicted_income == 0:
+        predicted_income_text = "<=50K"
+    elif predicted_income == 1:
+        predicted_income_text = ">=50K"
+    else:
+        predicted_income_text = "Unknown"
 
-
+    return render_template('index.html', prediction_type='instance', predicted_income_text=predicted_income_text)
 
 
 
