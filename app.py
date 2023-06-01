@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
-from batch import batch_prediction
-from instance import instance_prediction_class
+from Prediction_code.batch import batch_prediction
+from Prediction_code.instance import instance_prediction_class
 import os
 from Income.logger import logging
 from Income.constant import *
@@ -85,6 +85,7 @@ if __name__ == '__main__':
     host = '0.0.0.0'  # Specify the host address you want to use
     port = 8000  # Specify the port number you want to use
     app.run(debug=True, host=host, port=port)
+    
     
     
     

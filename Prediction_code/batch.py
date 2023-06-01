@@ -127,4 +127,3 @@ class batch_prediction:
             ApplicationException(e,sys) 
 
 
-
