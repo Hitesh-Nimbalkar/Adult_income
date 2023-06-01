@@ -8,7 +8,7 @@ from Income.logger import logging
 from Income.exception import ApplicationException           
 from Income.entity.config_entity import ModelEvaluationConfig
 from Income.entity.artifact_entity import ModelEvaluationArtifact,ModelPusherArtifact
-from Income.utils.utils import load_pickle_object,save_object,dump_model
+from Income.utils.utils import load_pickle_object,save_object,save_pickle_object
 from Income.constant.training_pipeline import *     
 from Income.constant import *       
 
@@ -37,7 +37,7 @@ class ModelPusher:
             model = load_pickle_object(file_path=model_path)
             file_path=os.path.join(ROOT_DIR,SAVED_MODEL_DIRECTORY,'model.pkl')
             
-            dump_model(file_path=file_path, model=model)
+            save_pickle_object(file_path=file_path, model=model)
             logging.info("Model saved.")
             
             # Model report

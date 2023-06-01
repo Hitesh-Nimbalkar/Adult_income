@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from batch import batch_prediction
 import os
+from Income.logger import logging
 from Income.constant import *
 from Income.entity.artifact_entity import ModelEvaluationArtifact
 
@@ -41,6 +42,8 @@ def perform_batch_prediction():
         file_path = os.path.join(UPLOAD_FOLDER, filename)
         file.save(file_path)
         print(file_path)
+        
+        logging.info("CSV received and Uploaded")
 
         # Perform batch prediction using the uploaded file
         batch = batch_prediction(file_path, model_file_path, transformer_file_path, feature_engineering_file_path)

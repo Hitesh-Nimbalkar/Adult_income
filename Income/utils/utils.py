@@ -8,7 +8,7 @@ import sys
 from Income.exception import ApplicationException
 from Income.logger import logging
 import pickle
-
+import joblib
 
 def read_yaml(file_path):
     try:
@@ -48,19 +48,7 @@ def save_object(file_path:str,obj):
     
     
 
-def load_pickle_object(file_path: str, file_name: str) :
-    """
-    Load a pickled object from a file.
-    file_path: str, path of the file directory
-    file_name: str, name of the file (including the .pkl extension)
-    return: The loaded object
-    """
-    try:
-        file_with_path = os.path.join(file_path, file_name)
-        with open(file_with_path, 'rb') as file_obj:
-            return pickle.load(file_obj)
-    except Exception as e:
-        raise ApplicationException(e, sys) from e
+
     
 def load_pickle_object(file_path: str):
     """
@@ -87,6 +75,24 @@ def save_object(file_path:str,obj):
     except Exception as e:
         raise ApplicationException(e,sys) from e
 
+def save_pickle_object(file_path, model):
+    """
+    Save a model object as a pickled file.
+    
+    file_path: str
+        Path to the file where the model will be saved.
+    model: object
+        The model object to be pickled and saved.
+    """
+    try:
+        directory = os.path.dirname(file_path)
+        os.makedirs(directory, exist_ok=True)
+        with open(file_path, 'wb') as file:
+            pickle.dump(model, file)
+    except Exception as e:
+        raise ApplicationException(e, sys) from e
+    
+    
 def load_numpy_array_data(file_path: str, file_name: str) -> np.ndarray:
     """
     Load numpy array data from a file.
@@ -102,7 +108,9 @@ def load_numpy_array_data(file_path: str, file_name: str) -> np.ndarray:
     
     
 
-def dump_model(model, file_path):
-    with open(file_path, 'wb') as file:
-        pickle.dump(model, file)
-    print(f"Model dumped successfully to {file_path}")
+def load_object(file_path: str):
+    try:
+        with open(file_path, 'rb') as file_obj:
+            return dill.load(file_obj)
+    except Exception as e:
+        raise ApplicationException(e, sys) from e
