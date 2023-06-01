@@ -6,6 +6,7 @@ import os
 from Income.logger import logging
 from Income.constant import *
 from Income.entity.artifact_entity import ModelEvaluationArtifact
+from Income.constant.data_base import *
 
 input_file_path = "adult.csv"
 feature_engineering_file_path = "Prediction_Files/feat_eng.pkl"
@@ -78,6 +79,7 @@ def perform_instance_prediction():
         predicted_income_text = "Unknown"
 
     return render_template('index.html', prediction_type='instance', predicted_income_text=predicted_income_text)
+
 
 
 
