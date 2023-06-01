@@ -110,6 +110,11 @@ class batch_prediction:
 
             # Create a DataFrame from the predictions array
             df_predictions = pd.DataFrame(predictions, columns=['prediction'])
+                        # Define the mapping dictionary
+            mapping = {0: "<= 50K", 1: ">= 50K"}
+
+            # Map the values in the prediction column using the mapping dictionary
+            df['prediction'] = df['prediction'].map(mapping)
 
             # Save the predictions to a CSV file
             BATCH_PREDICTION_PATH = BATCH_PREDICTION  # Specify the desired path for saving the CSV file

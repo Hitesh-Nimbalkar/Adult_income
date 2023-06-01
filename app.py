@@ -55,7 +55,15 @@ def perform_batch_prediction():
         return render_template('index.html', prediction_type='batch', error='Invalid file type')
 
 
+
+
+
+
+
 if __name__ == '__main__':
     host = '0.0.0.0'  # Specify the host address you want to use
     port = 8000  # Specify the port number you want to use
     app.run(debug=True, host=host, port=port)
+    
+    
+    
