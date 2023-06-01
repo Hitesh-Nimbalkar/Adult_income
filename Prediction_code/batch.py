@@ -106,7 +106,7 @@ class batch_prediction:
             
             logging.info(f"Loaded numpy from batch prediciton :{array}")
             predictions = model.predict(array)
-            logging.info("Predictions done")
+            logging.info(f"Predictions done :{predictions}")
 
             # Create a DataFrame from the predictions array
             df_predictions = pd.DataFrame(predictions, columns=['prediction'])
@@ -114,12 +114,12 @@ class batch_prediction:
             mapping = {0: "<= 50K", 1: ">= 50K"}
 
             # Map the values in the prediction column using the mapping dictionary
-            df['prediction'] = df['prediction'].map(mapping)
-
+            df_predictions['prediction'] = df_predictions['prediction'].map(mapping)
+            logging.info(" Predicitons mapped")
             # Save the predictions to a CSV file
             BATCH_PREDICTION_PATH = BATCH_PREDICTION  # Specify the desired path for saving the CSV file
             os.makedirs(BATCH_PREDICTION_PATH, exist_ok=True)
-            csv_path = os.path.join(BATCH_PREDICTION_PATH, 'predictions.csv')
+            csv_path = os.path.join(BATCH_PREDICTION_PATH,'predictions.csv')
             df_predictions.to_csv(csv_path, index=False)
             logging.info(f"Batch predictions saved to '{csv_path}'.")
 
